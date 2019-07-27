@@ -7,6 +7,10 @@
 	}
 }
 
+#demo_content {
+	justify-content: center;
+}
+
 #frctl_cnvs_div {
 	height: 420px;
 	width: 420px;
