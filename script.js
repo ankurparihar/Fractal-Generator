@@ -185,7 +185,7 @@ const fractal__data = {
 		}
 	},
 	apply: (root) => {
-		if(root===undefined) {
+		if (root === undefined) {
 			console.warn('Error: contentRoot not specified')
 			return
 		}
@@ -204,7 +204,7 @@ const fractal__data = {
 		fractal__data.onStaticLoad(root)
 	},
 	onStaticLoad: (root) => {
-		if(root===undefined) {
+		if (root === undefined) {
 			console.warn('Error: contentRoot not specified')
 			return
 		}
@@ -310,6 +310,7 @@ const fractal__data = {
 			temp_context.clearRect(0, 0, width, height)
 			temp_context.drawImage(canvas, 0, 0)
 			context.clearRect(0, 0, width, height)
+			frctl_itr_count.innerHTML = 'Iterations: ' + (itr + 1) + '/' + fractal__data.Iterations
 			function iterate_row() {
 				frctl_lines[(row + rows - 1) % rows].classList.remove('frctl_dbg_line')
 				frctl_lines[row].classList.add('frctl_dbg_line')
@@ -328,7 +329,6 @@ const fractal__data = {
 				if (row == rows) {
 					itr++
 					row = 0
-					frctl_itr_count.innerHTML = 'Iterations: ' + itr + '/' + fractal__data.Iterations
 					if (itr < fractal__data.Iterations) setTimeout(iterate_itr, fractal__data.simulationDelay)
 					else {
 						frctl_lines[rows - 1].classList.remove('frctl_dbg_line')
@@ -348,6 +348,7 @@ const fractal__data = {
 				temp_context.clearRect(0, 0, width, height)
 				temp_context.drawImage(canvas, 0, 0)
 				context.clearRect(0, 0, width, height)
+				frctl_itr_count.innerHTML = 'Iterations: ' + (itr + 1) + '/' + fractal__data.Iterations
 				for (row = 0; row < rows; ++row) {
 					frctl_lines[(row + rows - 1) % rows].classList.remove('frctl_dbg_line')
 					frctl_lines[row].classList.add('frctl_dbg_line')
@@ -363,7 +364,6 @@ const fractal__data = {
 					context.drawImage(temp_canvas, 0, 0)
 					context.restore()
 				}
-				frctl_itr_count.innerHTML = 'Iterations: ' + (itr + 1) + '/' + fractal__data.Iterations
 			}
 			frctl_lines[rows - 1].classList.remove('frctl_dbg_line')
 			frctl_bottom_div.classList.remove('frctl_running')
