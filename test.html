@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<style>
+		input[type=range][orient=vertical] {
+			-webkit-appearance: slider-vertical;
+			height: 160px;
+		}
+		
+		input[type=range][orient=horizontal] {
+			-webkit-appearance: slider-horizontal;
+			width: 160px;
+		}
+		
+		td {
+			min-width: 40px;
+			min-height: 20px;
+			text-align: center;
+		}
+		
+		td.left {
+			border-left: solid;
+		}
+		
+		td.right {
+			border-right: solid;
+		}
+		
+		td.top {
+			border-top: solid;
+		}
+		
+		td.bottom {
+			border-bottom: solid;
+		}
+	</style>
+
+</head>
+
+<body>
+
+	<div style="display:flex">
+		<canvas id="myCanvas" width="400" height="400" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
+		<table>
+			<tr>
+				<td id="m11" class="left top"></td>
+				<td id="m12"></td>
+				<td id="m13"></td>
+				<td id="m14" class="right top"></td>
+			</tr>
+			<tr>
+				<td id="m21" class="left"></td>
+				<td id="m22"></td>
+				<td id="m23"></td>
+				<td id="m24" class="right"></td>
+			</tr>
+			<tr>
+				<td id="m31" class="left"></td>
+				<td id="m32"></td>
+				<td id="m33"></td>
+				<td id="m34" class="right"></td>
+			</tr>
+			<tr>
+				<td id="m41" class="left bottom"></td>
+				<td id="m42"></td>
+				<td id="m43"></td>
+				<td id="m44" class="right bottom"></td>
+			</tr>
+		</table>
+	</div>
+
+	<div style="display:flex;">
+		<div style="height:300px;width:300px;margin:0">
+			<p>Vertical Skew: <span id="vSkewOut">0</span></p>
+			<input type="range" min="-90" max="90" value="0" class="slider" id="vSkewSlide" orient="vertical">
+			<p>Horizontal Skew: <span id="hSkewOut">0</span></p>
+			<input type="range" min="-90" max="90" value="0" class="slider" id="hSkewSlide" orient="horizontal">
+		</div>
+
+		<div style="height:300px;width:300px;margin:0">
+			<p>Vertical Trans: <span id="vTransOut">0</span></p>
+			<input type="range" min="-400" max="400" value="0" class="slider" id="vTransSlide" orient="vertical">
+			<p>Horizontal Trans: <span id="hTransOut">0</span></p>
+			<input type="range" min="-400" max="400" value="0" class="slider" id="hTransSlide" orient="horizontal">
+		</div>
+
+		<div style="height:300px;width:300px;margin:0">
+			<p>Vertical Scale: <span id="vScaleOut">0.5</span></p>
+			<input type="range" min="-100" max="100" value="50" class="slider" id="vScaleSlide" orient="vertical">
+			<p>Horizontal Scale: <span id="hScaleOut">0.5</span></p>
+			<input type="range" min="-100" max="100" value="50" class="slider" id="hScaleSlide" orient="horizontal">
+		</div>
+
+		<div style="height:300px;width:300px;margin:0">
+			<p>Rotate: <span id="rotateOut">0</span> deg</p>
+			<input type="range" min="-180" max="180" value="0" class="slider" id="rotateSlide" orient="vertical">
+		</div>
+	</div>
+
+	<script type="text/javascript" src="./test.js"></script>
+
+</body>
+
+</html>
