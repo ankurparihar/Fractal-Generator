@@ -330,7 +330,7 @@
 	border-image: initial;
 	appearance: menulist-button;
 	-webkit-appearance: menulist-button;
-	-moz-appearance: menulist-button;
+	-moz-appearance: menulist;
 }
 
 .fractal_select select option {
