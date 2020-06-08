@@ -234,6 +234,7 @@ const fractal__data = {
 		add_btn.addEventListener('click', fractal__data.addRow)
 		del_btn.addEventListener('click', fractal__data.deleteRow)
 		reset_btn.addEventListener('click', () => {
+			if (fractal__data.isRunning) return
 			fractal__data.resetIFSRules()
 			change_itr_btn.innerHTML = "Iterations: 0/" + fractal__data.Iterations
 			fractal__data.resetCanvas()
@@ -242,6 +243,7 @@ const fractal__data = {
 			fractal__data.simulationDelay = 1000 - animate_slider.value
 		})
 		select_btn.addEventListener('change', () => {
+			if (fractal__data.isRunning) return
 			fractal__data.IFSTemplate = select_btn.value
 			fractal__data.Iterations = fractal__data.IFSDB[fractal__data.IFSTemplate].itr
 			fractal__data.changeIteration(fractal__data.Iterations)
@@ -302,6 +304,8 @@ const fractal__data = {
 		frctl_bottom_div.classList.add('frctl_running')
 		const frctl_itr_count = document.getElementById('frctl_itr_count')
 		const frctl_lines = document.querySelectorAll('.frctl_rule_line:not(.frctl_rule_line_head)')
+		const select_btn = document.querySelector('.fractal_select select')
+		select_btn.setAttribute('disabled', '')
 		var itr = 0
 		var row = 0
 		// Controlled simulation
@@ -333,6 +337,7 @@ const fractal__data = {
 					else {
 						frctl_lines[rows - 1].classList.remove('frctl_dbg_line')
 						frctl_bottom_div.classList.remove('frctl_running')
+						select_btn.removeAttribute('disabled')
 						fractal__data.isRunning = false
 					}
 				} else {
@@ -367,6 +372,7 @@ const fractal__data = {
 			}
 			frctl_lines[rows - 1].classList.remove('frctl_dbg_line')
 			frctl_bottom_div.classList.remove('frctl_running')
+			select_btn.removeAttribute('disabled')
 			fractal__data.isRunning = false
 		}
 		else {
