@@ -1,1 +1,470 @@
-const rows=400,cols=400,canvas=document.getElementById("fractal_canvas"),ifs_head_div=document.getElementById("frctl_view_lines"),frctl_rule_count=document.getElementById("frctl_rule_count"),frctl_select=document.querySelector(".fractal_select select"),frctl_bottom_div=document.getElementsByClassName("frctl_bottom_div")[0];var i,p,clientX,clientY,ifs_c,ifs_r,tot_c,tot_r,context=canvas.getContext("2d"),imgData=context.createImageData(rows,cols),iterations=8;const ifsList={r:0,s:1,t:2,p:3,e:4,f:5},frctl_itr_count=document.getElementById("frctl_itr_count"),resetCanvasLayer=context.createImageData(rows,cols);fill(resetCanvasLayer,0,0,0,0);const IFSDB={0:{name:"Tree",param:["0.05","0.6","0","0","0.48","0.04","0.05","-0.6","0","0","0.47","0.5","0.5","0.45","45","45","0.3","0.08","0.5","0.4","20","20","0.28","0.5","0.5","0.5","-30","-30","0.3","0.65","0.55","0.4","-40","-40","0.32","0.4"]},1:{name:"Sierpinski Gasket",param:["0.5","0.5","0","0","0","0","0.5","0.5","0","0","0.5","0","0.5","0.5","0","0","0.25","0.5"]},2:{name:"Cantor Set",param:["0.33","1","0","0","0","0","0.33","1","0","0","0.67","0"]},3:{name:"Cantor Dust",param:["0.25","0.25","0","0","0","0","0.25","0.25","0","0","0.75","0","0.25","0.25","0","0","0","0.75","0.25","0.25","0","0","0.75","0.75"]},4:{name:"Vicsek fractal",param:["0.33","0.33","0","0","0","0","0.33","0.33","0","0","0.67","0","0.33","0.33","0","0","0","0.67","0.33","0.33","0","0","0.33","0.33","0.33","0.33","0","0","0.67","0.67"]},5:{name:"Hexaflake",param:["0.33","0.33","0","0","0","0.16","0.33","0.33","0","0","0","0.5","0.33","0.33","0","0","0.34","0","0.33","0.33","0","0","0.34","0.67","0.33","0.33","0","0","0.67","0.16","0.33","0.33","0","0","0.67","0.5"]},6:{name:"UnNamed (Assign 2-4)",param:["0.5","0.5","0","0","0","0","0.5","0.5","180","0","1","0","0.5","0.5","180","0","0.5","0.5"]}};var transImg,whiteImg,oprtnImg,tranCImg,IFSMatrix=["0.5","0.5","0","0","0","0","0.5","0.5","0","0","0.5","0","0.5","0.5","0","0","0.25","0.5"];function getIFSCord(t){clientX=t.getBoundingClientRect().x,clientY=t.getBoundingClientRect().y}function getIFSRule(t,a){ifs_c=t,ifs_r=a,showPopUp()}function changeIteration(){var t=parseInt(prompt("Please enter no of iterations","A +ve int"),10);Number.isInteger(t)&&t>0&&(iterations=t,frctl_itr_count.innerHTML="Iterations: 0/"+t,resetCanvas())}function showPopUp(){var t=document.getElementById("frctl_popup");t.style.left=clientX+"px",t.style.top=clientY+"px",t.classList.remove("frctl_hidden"),t.querySelector("#frctl_value").focus()}function processPopUp(){var t=document.getElementById("frctl_popup");t.classList.add("frctl_hidden"),t.style.left="0px",t.style.top="0px";var a=t.querySelector("#frctl_value").value;""==a||isNaN(a)||(document.getElementsByClassName("frctl_rule-"+ifs_c)[ifs_r+1].innerHTML=a,scanIFS()),t.querySelector("#frctl_value").value=""}function scanIFS(){var t=document.getElementsByClassName("frctl_rule-c");tot_c=6,tot_r=t.length/6,IFSMatrix=[];for(var a=0;a<tot_r;++a)for(var r=0;r<tot_c;++r)IFSMatrix.push(t[tot_c*a+r].innerHTML)}function loadIFS(){for(var t=document.getElementsByClassName("frctl_rule_line"),a=t.length,r=1;r<a;++r)t[1].parentNode.removeChild(t[1]);for(r=0;r<IFSMatrix.length/6;++r){var e=document.createElement("div");e.classList.add("frctl_rule_line");var n='\t\t<span>\n\t\t\t<span class="frctl_rule-r frctl_rule-c frctl_rule_deletable" onclick="getIFSCord(this);getIFSRule(\'r\','+r+')">'+IFSMatrix[6*r+0]+'</span>\n\t\t\t<span class="frctl_rule-s frctl_rule-c frctl_rule_deletable" onclick="getIFSCord(this);getIFSRule(\'s\','+r+')">'+IFSMatrix[6*r+1]+'</span>\n\t\t\t<span class="frctl_rule-t frctl_rule-c frctl_rule_deletable" onclick="getIFSCord(this);getIFSRule(\'t\','+r+')">'+IFSMatrix[6*r+2]+'</span>\n\t\t\t<span class="frctl_rule-p frctl_rule-c frctl_rule_deletable" onclick="getIFSCord(this);getIFSRule(\'p\','+r+')">'+IFSMatrix[6*r+3]+'</span>\n\t\t\t<span class="frctl_rule-e frctl_rule-c frctl_rule_deletable" onclick="getIFSCord(this);getIFSRule(\'e\','+r+')">'+IFSMatrix[6*r+4]+'</span>\n\t\t\t<span class="frctl_rule-f frctl_rule-c frctl_rule_deletable" onclick="getIFSCord(this);getIFSRule(\'f\','+r+')">'+IFSMatrix[6*r+5]+"</span>\n\t\t</span>";e.innerHTML=n,ifs_head_div.appendChild(e)}frctl_rule_count.innerHTML="rules: "+IFSMatrix.length/6}function addRowIFS(){for(var t=0;t<tot_c;++t)IFSMatrix.push("0");loadIFS()}function deleteRowIFS(t){for(var a=[],r=0;r<tot_c*t;++r)a.push(IFSMatrix[r]);for(r+=6;null!=IFSMatrix[r];)a.push(IFSMatrix[r]),++r;IFSMatrix=a,loadIFS()}function deleteLastRowIFS(){for(var t=0;t<6;++t)IFSMatrix.pop();loadIFS()}function resetIFS(){for(var t=0;t<IFSMatrix.length;++t)IFSMatrix[t]="0";loadIFS(),resetCanvas()}function updateIFS(){IFSMatrix=IFSDB[frctl_select.value].param.slice(0),loadIFS()}function revertImg(t){for(var a,r,e,n=0;n<rows/2;++n)for(var o=0;o<cols;++o)r=4*(cols*n+o),e=4*(cols*(rows-n-1)+o),a=t.data[r+0],t.data[r+0]=t.data[e+0],t.data[e+0]=a,a=t.data[r+1],t.data[r+1]=t.data[e+1],t.data[e+1]=a,a=t.data[r+2],t.data[r+2]=t.data[e+2],t.data[e+2]=a,a=t.data[r+3],t.data[r+3]=t.data[e+3],t.data[e+3]=a}function fill(t,a,r,e,n){for(var o=0;o<rows;++o)for(var i=0;i<cols;++i)pk=4*(cols*o+i),t.data[pk+0]=a,t.data[pk+1]=r,t.data[pk+2]=e,t.data[pk+3]=n}function displayImg(t){revertImg(t),context.putImageData(t,0,0)}function mainv1(){var t;fill(oprtnImg=context.createImageData(rows,cols),0,0,0,255);for(var a=0;a<iterations;++a){console.log(a),whiteImg=context.createImageData(rows,cols),tranCImg=context.createImageData(rows,cols),fill(whiteImg,255,255,255,255),fill(tranCImg,0,0,0,0);for(var r=0;r<tot_r;++r)t=tot_c*r,fill(transImg=context.createImageData(rows,cols),0,0,0,0),transformImg(oprtnImg,transImg,IFSMatrix[t+0],IFSMatrix[t+1],IFSMatrix[t+2],IFSMatrix[t+3],IFSMatrix[t+4],IFSMatrix[t+5]),blitImg(transImg,tranCImg);oprtnImg=tranCImg,frctl_itr_count.innerHTML="Iterations: "+(a+1)+"/"+iterations,blitImg(oprtnImg,whiteImg),displayImg(whiteImg)}}function blitImg(t,a){for(var r=0;r<rows;++r)for(var e=0;e<cols;++e)p=4*(cols*r+e),255==t.data[p+3]&&(a.data[p+0]=t.data[p+0],a.data[p+1]=t.data[p+1],a.data[p+2]=t.data[p+2],a.data[p+3]=t.data[p+3])}function transformImg(t,a,r,e,n,o,i,s){for(var l,c,f,I,d=0;d<rows;++d)for(var u=0;u<cols;++u)l=parseInt(r*Math.cos(n*Math.PI/180)*u-e*Math.sin(o*Math.PI/180)*d+i*cols,10),c=parseInt(r*Math.sin(n*Math.PI/180)*u+e*Math.cos(o*Math.PI/180)*d+s*rows,10),l>=0&&l<cols&&c>=0&&c<rows&&(f=4*(d*cols+u),I=4*(c*cols+l),a.data[I+0]=t.data[f+0],a.data[I+1]=t.data[f+1],a.data[I+2]=t.data[f+2],a.data[I+3]=t.data[f+3])}function resetCanvas(){context.putImageData(resetCanvasLayer,0,0)}function resetMatrix(t){for(var a=0;a<rows;++a)for(var r=0;r<cols;++r)t[cols*a+r]=256}function fillMatrix(t,a){for(var r=0;r<rows;++r)for(var e=0;e<cols;++e)t[r*cols+e]=a}function initMatrix(t,a){for(var r=0;r<rows;++r)for(var e=0;e<cols;++e)t.push(a)}function displayMatrixFractal(t){for(var a,r,e,n=context.createImageData(rows,cols),o=0;o<rows;++o)for(var i=0;i<cols;++i)r=4*(a=o*cols+i),256==(e=t[a])?(n.data[r+0]=255,n.data[r+1]=255,n.data[r+2]=255,n.data[r+3]=255):(n.data[r+0]=e,n.data[r+1]=e,n.data[r+2]=e,n.data[r+3]=255);displayImg(n)}function transformMatrix(t,a,r,e,n,o,i,s){for(var l,c,f=0;f<rows;++f)for(var I=0;I<cols;++I)256!=t[f*cols+I]&&(l=parseInt(r*Math.cos(n*Math.PI/180)*I-e*Math.sin(o*Math.PI/180)*f+i*cols,10),c=parseInt(r*Math.sin(n*Math.PI/180)*I+e*Math.cos(o*Math.PI/180)*f+s*rows,10),l>=0&&l<=cols&&c>=0&&c<=rows&&(a[c*cols+l]=t[f*cols+I]))}function mainv2(){scanIFS(),resetCanvas();var t=[],a=[];initMatrix(t,0),initMatrix(a,256);for(var r,e=[t,a],n=0,o=0;o<iterations;++o){for(var i=0;i<tot_r;++i)transformMatrix(e[n],e[1-n],IFSMatrix[(r=6*i)+0],IFSMatrix[r+1],IFSMatrix[r+2],IFSMatrix[r+3],IFSMatrix[r+4],IFSMatrix[r+5]);resetMatrix(e[n]),n=1-n,console.log(o),frctl_itr_count.innerHTML="Iterations: "+(o+1)+"/"+iterations}displayMatrixFractal(e[n])}function mainv3(){frctl_itr_count.innerHTML="Iterations: 0/"+iterations,scanIFS(),resetCanvas();var t=[],a=[];initMatrix(t,0),initMatrix(a,256);var r,e=[t,a],n=0,o=0;frctl_bottom_div.classList.add("frctl_running"),o<iterations&&setTimeout(function t(){for(var a=0;a<tot_r;++a)r=6*a,transformMatrix(e[n],e[1-n],IFSMatrix[r+0],IFSMatrix[r+1],IFSMatrix[r+2],IFSMatrix[r+3],IFSMatrix[r+4],IFSMatrix[r+5]);resetMatrix(e[n]),n=1-n,++o,frctl_itr_count.innerHTML="Iterations: "+o+"/"+iterations,o<iterations?setTimeout(t,500):frctl_bottom_div.classList.remove("frctl_running"),displayMatrixFractal(e[n])},500)}function mainv4(){var t;frctl_itr_count.innerHTML="Iterations: 0/"+iterations,scanIFS();var a=0;frctl_bottom_div.classList.add("frctl_running"),a<iterations&&setTimeout(function r(){for(var e=0;e<tot_r;++e)t=6*e,context.transform(IFSMatrix[t],IFSMatrix[t+2],IFSMatrix[t+3],IFSMatrix[t+1],IFSMatrix[e+4],IFSMatrix[t+5]),context.fillRect(0,0,rows,cols);++a,frctl_itr_count.innerHTML="Iterations: "+a+"/"+iterations,a<iterations&&setTimeout(r,500)},500),frctl_bottom_div.classList.remove("frctl_running")}document.body.onload=function(){frctl_itr_count.innerHTML="Iterations: 0/"+iterations,updateIFS(),tot_c=6,tot_r=3};
+const fractal__data = {
+	navID: "nav-projects",
+	page_loc_text: "Live Demo",
+	template: `
+	<div id="demo_page" class="demo-page page">
+		<div class="demo_page-head flex">
+			<div class="demo_page-title">Fractal Generator</div>
+		</div>
+		<div class="demo_page-body">
+			<div class="demo_page-cont flex wrap">
+				<div id="frctl_ifs" class="frctl_div">
+					<div id="frctl_ifs-head">IFS Rules</div>
+					<div id="frctl_ifs-head-2" class="flex">
+						<div id="frctl_ifs_btn_div">
+							<button id="frctl_ifs_btn" class="btn btn--flat" style="margin-left:25px;border:1px solid">IFS Rules</button>
+						</div>
+						<div id="frctl_feat_btn_div">
+							<button id="frctl_feat_btn" class="btn btn--flat" style="margin-right:25px;border:1px solid">Help</button>
+						</div>
+					</div>
+					<div id="frctl_editor">
+						<div id="frctl_dbg_num" class="vscode_margin">
+							<div id="frctl_play_btn">
+								<button title="Play fractal animation">
+									<svg style="width:36px;height:36px" viewBox="0 0 24 24">
+										<path fill="#3c763d" d="M8,5.14V19.14L19,12.14L8,5.14Z"></path>
+									</svg>
+								</button>
+							</div>
+							<div class="frctl_del_btn">
+								<button title="Delete last row">
+									<svg style="width:24px;height:24px" viewBox="0 0 24 24">
+										<path fill="#ff0000" d="M19,13H5V11H19V13Z"></path>
+									</svg>
+								</button>
+							</div>
+							<div class="frctl_add_btn">
+								<button title="Add a new row">
+									<svg style="width:24px;height:24px" viewBox="0 0 24 24">
+										<path fill="#00ff00" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path>
+									</svg>
+								</button>
+							</div>
+							<div class="frctl_rst_btn">
+								<button title="Reset all rows">
+									<svg style="width:24px;height:24px" viewBox="0 0 24 24">
+										<path fill="#ffff00" d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path>
+									</svg>
+								</button>
+							</div>
+							<div class="frctl_animate_slider">
+								<input type="range" orient="vertical" min="0" max="1000" value="800">
+							</div>
+						</div>
+						<div class="vs_dark frctl_rule_editor">
+							<div class="frctl_lines_content">
+								<div class="frctl_view_lines" id="frctl_view_lines" role="presentation">
+									<div style="top:0px;height:36px;display:none" id="frctl_dbg_ctrl_dv"></div>
+									<div style="top:0px;height:36px;background-color:#3c763d;padding-top:6px" class="frctl_rule_line frctl_rule_line_head">
+										<span>
+											<span class="frctl_rule-r frctl_rule-h" contenteditable="false">r</span>
+											<span class="frctl_rule-s frctl_rule-h" contenteditable="false">s</span>
+											<span class="frctl_rule-t frctl_rule-h" contenteditable="false">θ°</span>
+											<span class="frctl_rule-p frctl_rule-h" contenteditable="false">Ф°</span>
+											<span class="frctl_rule-e frctl_rule-h" contenteditable="false">e</span>
+											<span class="frctl_rule-f frctl_rule-h" contenteditable="false">f</span>
+										</span>
+									</div>
+								</div>
+								<div class="fractal_select">
+									<select aria-label="Select predefined fractal"></select>
+								</div>
+								<div class="frctl_bottom_div">
+									<div id="frctl_rule_count" title="Rules count">rules: ?</div>
+									<div id="frctl_itr_count" title="Change iterations">Iterations: 0/?</div>
+								</div>
+							</div>
+						</div>
+						<div data-role="popup" id="frctl_popup" class="frctl_hidden" style="text-align:center;display:flex;top:0;left:0;position:fixed">
+							<input type="text" id="frctl_value" placeholder="value" aria-label="input fractal value" tabindex="-1"></input>
+							<button style="border:none;background-color:#ffffff;margin:0;width:50px;height:40px" aria-label="Enter popup">
+								<svg style="width:24px;height:24px" viewBox="0 0 24 24">
+									<path fill="#4CAF50" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
+								</svg>
+							</button>
+						</div>
+					</div>
+					<div id="frctl_ifs_feat" class="frctl_div" style="display:none">
+						<div class="frctl_feat-h3">Features</div>
+						<div class="frctl_feat-list">
+							<ul>
+								<li>Use custom rules to generate fractals</li>
+								<li>As many as required rules can be used</li>
+							</ul>
+						</div>
+						<div class="frctl_feat-h3">Instructions</div>
+						<div class="frctl_feat-list">
+							<ul>
+								<li>Play button to play the loaded fractal</li>
+								<li>Add/Remove rule (at/from the end)</li>
+								<li>Reset rules to default</li>
+								<li>Click on values to change them</li>
+								<li>Chage no of iterations (click Iterations on bottom)</li>
+								<li>Control speed using slider</li>
+							</ul>
+						</div>
+						<div class="frctl_feat-h3 highlight"><i>Note:</i></div>
+						<div class="frctl_feat-list">
+							<ul>
+								<li>2D - Cartesian coordinate system</li>
+								<li>Left-Bottom is Origin (0,0)</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div id="frctl_cnv" class="frctl_div">
+					<canvas id="fractal_canvas" width="400" height="400"></canvas>
+				</div>
+				<div id="frctl_feat" class="frctl_div">
+					<div class="frctl_feat-h3">Features</div>
+					<div class="frctl_feat-list">
+						<ul>
+							<li>Use custom rules to generate fractals</li>
+							<li>As many as required rules can be used</li>
+						</ul>
+					</div>
+					<div class="frctl_feat-h3">Instructions</div>
+					<div class="frctl_feat-list">
+						<ul>
+							<li>Play button to play the loaded fractal</li>
+							<li>Add/Remove rule (at/from the end)</li>
+							<li>Reset rules to default</li>
+							<li>Click on values to change them</li>
+							<li>Chage no of iterations (click Iterations on bottom)</li>
+							<li>Control speed using slider</li>
+						</ul>
+					</div>
+					<div class="frctl_feat-h3 highlight"><i>Note:</i></div>
+					<div class="frctl_feat-list">
+						<ul>
+							<li>2D - Cartesian coordinate system</li>
+							<li>Left-Bottom is Origin (0,0)</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	`,
+	IFSDB: {
+		0: {
+			name: "Tree",
+			itr: 8,
+			param: ["0.05", "0.6", "0", "0", "0.48", "0.04", "0.05", "-0.6", "0", "0", "0.47", "0.5", "0.5", "0.45", "45", "45", "0.35", "0.16", "0.5", "0.4", "20", "20", "0.45", "0.74", "0.5", "0.5", "-30", "-30", "1.05", "1", "0.55", "0.4", "-40", "-40", "0.34", "0.95"]
+		},
+		1: {
+			name: "Sierpinski Gasket",
+			itr: 8,
+			param: ["0.5", "0.5", "0", "0", "0", "0", "0.5", "0.5", "0", "0", "0.5", "0", "0.5", "0.5", "0", "0", "0.25", "0.5"]
+		},
+		2: {
+			name: "Cantor Set",
+			itr: 5,
+			param: ["0.33", "1", "0", "0", "0", "0", "0.33", "1", "0", "0", "0.67", "0"]
+		},
+		3: {
+			name: "Cantor Dust",
+			itr: 3,
+			param: ["0.25", "0.25", "0", "0", "0", "0", "0.25", "0.25", "0", "0", "0.75", "0", "0.25", "0.25", "0", "0", "0", "0.75", "0.25", "0.25", "0", "0", "0.75", "0.75"]
+		},
+		4: {
+			name: "Vicsek fractal",
+			itr: 5,
+			param: ["0.33", "0.33", "0", "0", "0", "0", "0.33", "0.33", "0", "0", "0.67", "0", "0.33", "0.33", "0", "0", "0", "0.67", "0.33", "0.33", "0", "0", "0.33", "0.33", "0.33", "0.33", "0", "0", "0.67", "0.67"]
+		},
+		5: {
+			name: "Hexaflake",
+			itr: 6,
+			param: ["0.33", "0.33", "0", "0", "0", "0.16", "0.33", "0.33", "0", "0", "0", "0.5", "0.33", "0.33", "0", "0", "0.34", "0", "0.33", "0.33", "0", "0", "0.34", "0.67", "0.33", "0.33", "0", "0", "0.67", "0.16", "0.33", "0.33", "0", "0", "0.67", "0.5"]
+		},
+		6: {
+			name: "UnNamed (Assign 2-4)",
+			itr: 8,
+			param: ["0.5", "0.5", "0", "0", "0", "0", "-0.5", "0.5", "0", "0", "1", "0", "-0.5", "0.5", "0", "0", "0.5", "0.5"]
+		}
+	},
+	apply: (root) => {
+		if (root === undefined) {
+			console.warn('Error: contentRoot not specified')
+			return
+		}
+		root.innerHTML = fractal__data.template
+		const selectElem = root.querySelector('.fractal_select select')
+		selectElem.innerHTML = ''
+		for (var key in fractal__data.IFSDB) {
+			var optionElem = document.createElement('option')
+			optionElem.value = key
+			optionElem.innerHTML = fractal__data.IFSDB[key].name
+			selectElem.appendChild(optionElem)
+		}
+		fractal__data.IFSTemplate = 0
+		fractal__data.resetIFSRules()
+		fractal__data.changeIteration(fractal__data.IFSDB[fractal__data.IFSTemplate].itr)
+		fractal__data.onStaticLoad(root)
+	},
+	onStaticLoad: (root) => {
+		if (root === undefined) {
+			console.warn('Error: contentRoot not specified')
+			return
+		}
+		const frctl_ifs_btn = document.getElementById('frctl_ifs_btn')
+		const frctl_feat_btn = document.getElementById('frctl_feat_btn')
+		const play_btn = root.querySelector('#frctl_play_btn button')
+		const add_btn = root.querySelector('.frctl_add_btn button')
+		const del_btn = root.querySelector('.frctl_del_btn button')
+		const reset_btn = root.querySelector('.frctl_rst_btn button')
+		const select_btn = root.querySelector('.fractal_select select')
+		const change_itr_btn = document.getElementById('frctl_itr_count')
+		const animate_slider = root.querySelector('.frctl_animate_slider input')
+		fractal__data.IFSTemplate = 0
+		fractal__data.IFSMatrix = fractal__data.IFSDB[0].param
+		fractal__data.Iterations = fractal__data.IFSDB[0].itr
+		frctl_ifs_btn.addEventListener('click', (e) => {
+			showRippleEffect(e, frctl_ifs_btn)
+			document.getElementById('frctl_editor').style.display = 'flex'
+			document.getElementById('frctl_ifs_feat').style.display = 'none'
+		})
+		frctl_feat_btn.addEventListener('click', (e) => {
+			showRippleEffect(e, frctl_feat_btn)
+			document.getElementById('frctl_editor').style.display = 'none'
+			document.getElementById('frctl_ifs_feat').style.display = 'block'
+		})
+		play_btn.addEventListener('click', fractal__data.play)
+		add_btn.addEventListener('click', fractal__data.addRow)
+		del_btn.addEventListener('click', fractal__data.deleteRow)
+		reset_btn.addEventListener('click', () => {
+			if (fractal__data.isRunning) return
+			fractal__data.resetIFSRules()
+			change_itr_btn.innerHTML = "Iterations: 0/" + fractal__data.Iterations
+			fractal__data.resetCanvas()
+		})
+		animate_slider.addEventListener('input', () => {
+			fractal__data.simulationDelay = 1000 - animate_slider.value
+		})
+		select_btn.addEventListener('change', () => {
+			if (fractal__data.isRunning) return
+			fractal__data.IFSTemplate = select_btn.value
+			fractal__data.Iterations = fractal__data.IFSDB[fractal__data.IFSTemplate].itr
+			fractal__data.changeIteration(fractal__data.Iterations)
+			fractal__data.resetIFSRules()
+			fractal__data.resetCanvas()
+		})
+		change_itr_btn.addEventListener('click', fractal__data.changeIteration)
+		var i = 0
+		root.querySelectorAll('.frctl_rule-c').forEach(elem => {
+			elem.setAttribute('data-index', i)
+			i++
+			elem.addEventListener('click', fractal__data.showPopUp)
+		})
+		document.getElementById('frctl_value').onkeydown = (e) => {
+			if (e.keyCode === 13) fractal__data.processPopUp()
+		}
+		document.querySelector('#frctl_popup button').addEventListener('click', fractal__data.processPopUp)
+	},
+	IFSTemplate: undefined,
+	IFSMatrix: undefined,
+	Iterations: undefined,
+	clientX: undefined,
+	clientY: undefined,
+	index: undefined,
+	simulationDelay: 200,
+	isRunning: false,
+	play: () => {
+		if (fractal__data.isRunning) return
+		const canvas = document.getElementById("fractal_canvas")
+		const temp_canvas = document.createElement('canvas')
+		const width = canvas.width
+		const height = canvas.height
+		temp_canvas.width = width
+		temp_canvas.height = height
+		const context = canvas.getContext("2d")
+		const temp_context = temp_canvas.getContext("2d")
+		context.fillStyle = '#000000ff'
+		context.fillRect(0, 0, width, height)
+		context.fillStyle = '#ffffffff'
+		const rows = fractal__data.IFSMatrix.length / 6
+		const cols = 6
+		var r, s, t, p, e, f
+		const bottom = canvas.getBoundingClientRect().y + canvas.getBoundingClientRect().height
+		const hWindow = window.innerHeight
+		if (bottom > hWindow) {
+			const offSet = bottom - hWindow + 10
+			var loop = (offSet + 20) / 20
+			var id
+			id = setInterval(function () {
+				document.documentElement.scrollBy(0, 20) || document.body.scrollBy(0, 20)
+				loop--
+				if (loop <= 0) {
+					clearInterval(id)
+				}
+			}, 10);
+		}
+		const frctl_bottom_div = document.querySelector('.frctl_bottom_div')
+		frctl_bottom_div.classList.add('frctl_running')
+		const frctl_itr_count = document.getElementById('frctl_itr_count')
+		const frctl_lines = document.querySelectorAll('.frctl_rule_line:not(.frctl_rule_line_head)')
+		const select_btn = document.querySelector('.fractal_select select')
+		select_btn.setAttribute('disabled', '')
+		var itr = 0
+		var row = 0
+		// Controlled simulation
+		function iterate_itr() {
+			fractal__data.isRunning = true
+			temp_context.clearRect(0, 0, width, height)
+			temp_context.drawImage(canvas, 0, 0)
+			context.clearRect(0, 0, width, height)
+			frctl_itr_count.innerHTML = 'Iterations: ' + (itr + 1) + '/' + fractal__data.Iterations
+			function iterate_row() {
+				frctl_lines[(row + rows - 1) % rows].classList.remove('frctl_dbg_line')
+				frctl_lines[row].classList.add('frctl_dbg_line')
+				context.save()
+				r = fractal__data.IFSMatrix[row * cols + 0]
+				s = fractal__data.IFSMatrix[row * cols + 1]
+				t = fractal__data.IFSMatrix[row * cols + 2]
+				p = fractal__data.IFSMatrix[row * cols + 3]
+				e = fractal__data.IFSMatrix[row * cols + 4]
+				f = fractal__data.IFSMatrix[row * cols + 5]
+				context.transform(r, 0, 0, s, e * width - s * height * Math.sin(t), (1 - f - s) * height + s * height * (1 - Math.cos(t)))
+				context.rotate(-t * Math.PI / 180)
+				context.drawImage(temp_canvas, 0, 0)
+				context.restore()
+				row++
+				if (row == rows) {
+					itr++
+					row = 0
+					if (itr < fractal__data.Iterations) setTimeout(iterate_itr, fractal__data.simulationDelay)
+					else {
+						frctl_lines[rows - 1].classList.remove('frctl_dbg_line')
+						frctl_bottom_div.classList.remove('frctl_running')
+						select_btn.removeAttribute('disabled')
+						fractal__data.isRunning = false
+					}
+				} else {
+					setTimeout(iterate_row, fractal__data.simulationDelay)
+				}
+			}
+			iterate_row()
+		}
+		if (fractal__data.simulationDelay <= 10) {
+			// Fastest simulation, no delay
+			fractal__data.isRunning = true
+			for (itr = 0; itr < fractal__data.Iterations; ++itr) {
+				temp_context.clearRect(0, 0, width, height)
+				temp_context.drawImage(canvas, 0, 0)
+				context.clearRect(0, 0, width, height)
+				frctl_itr_count.innerHTML = 'Iterations: ' + (itr + 1) + '/' + fractal__data.Iterations
+				for (row = 0; row < rows; ++row) {
+					frctl_lines[(row + rows - 1) % rows].classList.remove('frctl_dbg_line')
+					frctl_lines[row].classList.add('frctl_dbg_line')
+					context.save()
+					r = fractal__data.IFSMatrix[row * cols + 0]
+					s = fractal__data.IFSMatrix[row * cols + 1]
+					t = fractal__data.IFSMatrix[row * cols + 2]
+					p = fractal__data.IFSMatrix[row * cols + 3]
+					e = fractal__data.IFSMatrix[row * cols + 4]
+					f = fractal__data.IFSMatrix[row * cols + 5]
+					context.transform(r, 0, 0, s, e * width - s * height * Math.sin(t), (1 - f - s) * height + s * height * (1 - Math.cos(t)))
+					context.rotate(-t * Math.PI / 180)
+					context.drawImage(temp_canvas, 0, 0)
+					context.restore()
+				}
+			}
+			frctl_lines[rows - 1].classList.remove('frctl_dbg_line')
+			frctl_bottom_div.classList.remove('frctl_running')
+			select_btn.removeAttribute('disabled')
+			fractal__data.isRunning = false
+		}
+		else {
+			iterate_itr()
+		}
+	},
+	resetCanvas: () => {
+		if (fractal__data.isRunning) return
+		const canvas = document.getElementById("fractal_canvas")
+		const context = canvas.getContext('2d')
+		context.clearRect(0, 0, canvas.width, canvas.height)
+	},
+	addRow: () => {
+		if (fractal__data.isRunning) return
+		for (var i = 0; i < 6; ++i) fractal__data.IFSMatrix.push(0)
+		fractal__data.updateIFSRules()
+	},
+	deleteRow: () => {
+		if (fractal__data.isRunning) return
+		for (var i = 0; i < 6; ++i) fractal__data.IFSMatrix.pop()
+		fractal__data.updateIFSRules()
+	},
+	resetIFSRules: () => {
+		if (fractal__data.isRunning) return
+		fractal__data.IFSMatrix = []
+		fractal__data.IFSDB[fractal__data.IFSTemplate].param.forEach(v => {
+			fractal__data.IFSMatrix.push(v)
+		})
+		fractal__data.updateIFSRules()
+	},
+	updateIFSRules: () => {
+		if (fractal__data.isRunning) return
+		const ifs_head_div = document.getElementById("frctl_view_lines")
+		const frctl_rule_count = document.getElementById("frctl_rule_count")
+		var deletable = document.getElementsByClassName("frctl_rule_line")
+		var del_length = deletable.length
+		for (var i = 1; i < del_length; ++i) {
+			deletable[1].parentNode.removeChild(deletable[1])
+		}
+		deletable = null
+		for (var i = 0; i < fractal__data.IFSMatrix.length / 6; ++i) {
+			var node = document.createElement("div")
+			node.classList.add("frctl_rule_line")
+			node.innerHTML = `
+			<span>
+				<span class="frctl_rule-r frctl_rule-c frctl_rule_deletable" data-index="`+ (i * 6 + 0) + `">` + fractal__data.IFSMatrix[i * 6 + 0] + `</span>\n\
+				<span class="frctl_rule-s frctl_rule-c frctl_rule_deletable" data-index="`+ (i * 6 + 1) + `">` + fractal__data.IFSMatrix[i * 6 + 1] + `</span>\n\
+				<span class="frctl_rule-t frctl_rule-c frctl_rule_deletable" data-index="`+ (i * 6 + 2) + `">` + fractal__data.IFSMatrix[i * 6 + 2] + `</span>\n\
+				<span class="frctl_rule-p frctl_rule-c frctl_rule_deletable" data-index="`+ (i * 6 + 3) + `">` + fractal__data.IFSMatrix[i * 6 + 3] + `</span>\n\
+				<span class="frctl_rule-e frctl_rule-c frctl_rule_deletable" data-index="`+ (i * 6 + 4) + `">` + fractal__data.IFSMatrix[i * 6 + 4] + `</span>\n\
+				<span class="frctl_rule-f frctl_rule-c frctl_rule_deletable" data-index="`+ (i * 6 + 5) + `">` + fractal__data.IFSMatrix[i * 6 + 5] + `</span>\n\
+			</span>`
+			ifs_head_div.appendChild(node)
+		}
+		document.querySelectorAll('.frctl_rule-c').forEach(elem => {
+			elem.addEventListener('click', fractal__data.showPopUp)
+		})
+		frctl_rule_count.innerHTML = "rules: " + fractal__data.IFSMatrix.length / 6
+	},
+	changeIteration: (new_itr) => {
+		if (fractal__data.isRunning) return
+		if (!Number.isInteger(new_itr)) new_itr = parseInt(prompt("Please enter no of iterations", "A +ve int"), 10)
+		if (Number.isInteger(new_itr) && new_itr > 0) {
+			fractal__data.Iterations = new_itr
+			document.getElementById('frctl_itr_count').innerHTML = "Iterations: 0/" + new_itr
+		}
+	},
+	showPopUp: (event) => {
+		if (fractal__data.isRunning) return
+		const elem = event.target
+		fractal__data.clientX = elem.getBoundingClientRect().x
+		fractal__data.clientY = elem.getBoundingClientRect().y
+		fractal__data.index = elem.getAttribute('data-index')
+		var popup = document.getElementById('frctl_popup')
+		popup.style.left = fractal__data.clientX + "px"
+		popup.style.top = fractal__data.clientY + "px"
+		popup.classList.remove('frctl_hidden')
+		popup.querySelector("#frctl_value").focus()
+	},
+	processPopUp: () => {
+		if (fractal__data.isRunning) return
+		var popup = document.getElementById("frctl_popup")
+		popup.classList.add("frctl_hidden")
+		popup.style.left = "0px"
+		popup.style.top = "0px"
+		const input = popup.querySelector("#frctl_value").value
+		if (input != '' && !isNaN(input)) {
+			fractal__data.IFSMatrix[fractal__data.index] = input
+			document.querySelectorAll('.frctl_rule-c')[fractal__data.index].innerHTML = input
+		}
+		popup.querySelector("#frctl_value").value = ""
+	}
+}
+
+spa.register('/projects/fractal-generator', fractal__data)
