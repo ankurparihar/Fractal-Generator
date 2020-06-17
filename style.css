@@ -13,6 +13,22 @@
 	height: 80px
 }
 
+#demo_page .demo_page-back,
+#demo_page .demo_page-info {
+	background-color: transparent;
+	box-shadow: none
+}
+
+#demo_page .demo_page-back svg,
+#demo_page .demo_page-info svg {
+	cursor: pointer
+}
+
+#demo_page .demo_page-back svg:hover,
+#demo_page .demo_page-info svg:hover {
+	color: #f3c669
+}
+
 #demo_page button {
 	outline: none
 }
@@ -381,4 +397,32 @@
 	width: 8px;
 	height: 100px;
 	padding: 0 5px
+}
+
+
+.green--text {
+	color: #4caf50!important
+}
+
+.green--text input,
+.green--text textarea {
+	caret-color: #4caf50!important
+}
+
+.green.darken-1 {
+	border-color: #43a047!important
+}
+
+.green.darken-1,
+.green.darken-1--after:after {
+	background-color: #43a047!important
+}
+
+.green--text.text--darken-1 {
+	color: #43a047!important
+}
+
+.green--text.text--darken-1 input,
+.green--text.text--darken-1 textarea {
+	caret-color: #43a047!important
 }

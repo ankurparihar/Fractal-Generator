@@ -4,7 +4,13 @@ const fractal__data = {
 	template: `
 	<div id="demo_page" class="demo-page page">
 		<div class="demo_page-head flex">
+			<div class="demo_page-back btn" title="Back to all projects">
+				<svg style="width:24px;height:24px;" viewBox="0 0 24 24"><path fill="currentColor" d="M21,11H6.83L10.41,7.41L9,6L3,12L9,18L10.41,16.58L6.83,13H21V11Z"/></svg>
+			</div>
 			<div class="demo_page-title">Fractal Generator</div>
+			<div class="demo_page-info btn" title="Info">
+				<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="currentColor" d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/></svg>
+			</div>
 		</div>
 		<div class="demo_page-body">
 			<div class="demo_page-cont flex wrap">
@@ -12,44 +18,36 @@ const fractal__data = {
 					<div id="frctl_ifs-head">IFS Rules</div>
 					<div id="frctl_ifs-head-2" class="flex">
 						<div id="frctl_ifs_btn_div">
-							<button id="frctl_ifs_btn" class="btn btn--flat" style="margin-left:25px;border:1px solid">IFS Rules</button>
+							<button id="frctl_ifs_btn" aria-label="IFS rules" class="btn btn--flat" style="margin-left:25px;border:1px solid">IFS Rules</button>
 						</div>
 						<div id="frctl_feat_btn_div">
-							<button id="frctl_feat_btn" class="btn btn--flat" style="margin-right:25px;border:1px solid">Help</button>
+							<button id="frctl_feat_btn" aria-label="help" class="btn btn--flat" style="margin-right:25px;border:1px solid">Help</button>
 						</div>
 					</div>
 					<div id="frctl_editor">
 						<div id="frctl_dbg_num" class="vscode_margin">
 							<div id="frctl_play_btn">
 								<button title="Play fractal animation">
-									<svg style="width:36px;height:36px" viewBox="0 0 24 24">
-										<path fill="#3c763d" d="M8,5.14V19.14L19,12.14L8,5.14Z"></path>
-									</svg>
+									<svg style="width:36px;height:36px" viewBox="0 0 24 24"><path fill="#3c763d" d="M8,5.14V19.14L19,12.14L8,5.14Z"></path></svg>
 								</button>
 							</div>
 							<div class="frctl_del_btn">
 								<button title="Delete last row">
-									<svg style="width:24px;height:24px" viewBox="0 0 24 24">
-										<path fill="#ff0000" d="M19,13H5V11H19V13Z"></path>
-									</svg>
+									<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="#ff0000" d="M19,13H5V11H19V13Z"></path></svg>
 								</button>
 							</div>
 							<div class="frctl_add_btn">
 								<button title="Add a new row">
-									<svg style="width:24px;height:24px" viewBox="0 0 24 24">
-										<path fill="#00ff00" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path>
-									</svg>
+									<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="#00ff00" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>
 								</button>
 							</div>
 							<div class="frctl_rst_btn">
 								<button title="Reset all rows">
-									<svg style="width:24px;height:24px" viewBox="0 0 24 24">
-										<path fill="#ffff00" d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path>
-									</svg>
+									<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="#ffff00" d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg>
 								</button>
 							</div>
 							<div class="frctl_animate_slider">
-								<input type="range" orient="vertical" min="0" max="1000" value="800">
+								<input type="range" orient="vertical" min="0" max="1000" value="800"  title="Simulation speed">
 							</div>
 						</div>
 						<div class="vs_dark frctl_rule_editor">
@@ -217,6 +215,19 @@ const fractal__data = {
 		const select_btn = root.querySelector('.fractal_select select')
 		const change_itr_btn = document.getElementById('frctl_itr_count')
 		const animate_slider = root.querySelector('.frctl_animate_slider input')
+		const demoBackBtn = root.querySelector('.demo_page-back')
+		const demoInfoBtn = root.querySelector('.demo_page-info')
+		const urlInfo = URLDissect(window.location.href)
+		demoBackBtn.addEventListener('click', (e) => {
+			if (e.ctrlKey) window.open(urlInfo.protocol + '://' + urlInfo.domain + '/projects')
+			else {
+				spa.navigate(urlInfo.protocol + '://' + urlInfo.domain + '/projects')
+			}
+			e.preventDefault()
+		})
+		demoInfoBtn.addEventListener('click', () => {
+			showDialog(`<div class="card" style="height:auto"><div class="card__title headline">About Fractal Generator</div><div class="card__text">The project was assigned during the course <span class='highlight'>Fractals and Applications (IES-301)</span> at IIT Roorkee. This is a program to generate fractal from given IFS (Iterated Function System) rules.</div><div class="card__actions"><div class="spacer"></div><a target="_blank" href="/res-iitr?tab=6-0" class="btn btn--flat green--text text--darken-1"><div class="btn__content">View course</div></button><a target="_blank" rel="noopener" href="https://github.com/ankurparihar/Fractal-Generator" class="btn btn--flat green--text text--darken-1"><div class="btn__content">View on Github</div></a></div></div>`)
+		})
 		fractal__data.IFSTemplate = 0
 		fractal__data.IFSMatrix = fractal__data.IFSDB[0].param
 		fractal__data.Iterations = fractal__data.IFSDB[0].itr
