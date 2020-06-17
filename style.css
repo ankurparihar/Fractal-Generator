@@ -36,7 +36,14 @@
 #demo_page .demo_page-title {
 	width: 100%;
 	font-size: 28px;
-	text-align: center
+	text-align: center;
+	margin: auto
+}
+
+@media (max-width:600px) {
+	#demo_page .demo_page-title {
+		font-size: 4.5vw;
+	}
 }
 
 .demo_page-body .demo_page-cont {
