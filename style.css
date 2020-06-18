@@ -302,13 +302,7 @@
 	border-right: 1px dashed grey
 }
 
-#frctl_popup::placeholder,
-#frctl_popup::-ms-input-placeholder,
-#frctl_popup:-ms-input-placeholder {
-	color: #0072be88
-}
-
-::placeholder {
+#frctl_popup input::placeholder {
 	color: #0072be88
 }
 
@@ -371,10 +365,6 @@
 #frctl_itr_count:hover {
 	cursor: pointer;
 	background-color: rgba(255, 255, 255, 0.12)
-}
-
-.vs_line-numbers {
-	margin-top: 4px
 }
 
 .vscode_margin {
