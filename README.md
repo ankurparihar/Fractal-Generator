@@ -11,3 +11,11 @@ In mathematics, iterated function systems (IFSs) are a method of constructing fr
 - Tweak and experiment with existing rules
 - Visualize fractal generation process step by step
 - Control the speed of simulation
+
+
+<hr>
+
+### PageSpeed score powered by [readme-pagespeed-insights](https://github.com/ankurparihar/readme-pagespeed-insights)
+<p align="center">
+	<img align="center" src="./pagespeed.svg" width="600px">
+</p>
